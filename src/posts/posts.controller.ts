@@ -32,7 +32,10 @@ export class PostsController {
   }
 
   @Patch(':id')
-  update(@Param('id') id: string, @Body() updatePostDto: InsertPost) {
+  update(
+    @Param('id') id: string,
+    @Body() updatePostDto: Partial<Omit<InsertPost, 'id'>>,
+  ) {
     return this.postsService.update(id, updatePostDto);
   }
 
