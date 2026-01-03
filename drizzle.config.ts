@@ -10,7 +10,8 @@ if (!databaseUrl) {
   throw new Error('DATABASE_URL environment variable is not set');
 }
 export default defineConfig({
-  schema: './src/drizzle/schemas.ts',
+  schema: './src/drizzle/schema',
+  // schema: './src/drizzle/schema/**.schema.ts', //regex pattern to include all schema files
   out: './src/drizzle/migrations',
   dialect: 'postgresql',
   dbCredentials: {
