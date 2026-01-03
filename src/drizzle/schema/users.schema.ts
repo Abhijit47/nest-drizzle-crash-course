@@ -18,3 +18,6 @@ export const userRelations = relations(users, ({ one, many }) => ({
   profileInfo: one(profileInfo),
   usersToGroups: many(usersToGroups),
 }));
+
+export type InsertUser = typeof users.$inferInsert;
+export type SelectUser = typeof users.$inferSelect;

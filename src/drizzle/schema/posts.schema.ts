@@ -19,3 +19,6 @@ export const postRelations = relations(posts, ({ one, many }) => ({
   }),
   comments: many(comments),
 }));
+
+export type InsertPost = typeof posts.$inferInsert;
+export type SelectPost = typeof posts.$inferSelect;
