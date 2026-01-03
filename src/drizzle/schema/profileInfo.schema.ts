@@ -1,10 +1,10 @@
-import { integer, jsonb, pgTable, serial } from 'drizzle-orm/pg-core';
+import { jsonb, pgTable, uuid } from 'drizzle-orm/pg-core';
 import { users } from './users.schema';
 
 export const profileInfo = pgTable('profile_info', {
-  id: serial('id').primaryKey(),
+  id: uuid('id').primaryKey().defaultRandom(),
   metadata: jsonb('metadata'),
-  userId: integer('user_id')
+  userId: uuid('user_id')
     .notNull()
     .references(() => users.id, { onDelete: 'cascade' }),
 });

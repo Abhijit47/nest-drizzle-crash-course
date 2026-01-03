@@ -1,14 +1,14 @@
-import { integer, pgTable, serial, varchar } from 'drizzle-orm/pg-core';
+import { pgTable, uuid, varchar } from 'drizzle-orm/pg-core';
 import { posts } from './posts.schema';
 import { users } from './users.schema';
 
 export const comments = pgTable('comments', {
-  id: serial('id').primaryKey(),
-  comment: varchar('content', { length: 500 }).notNull(),
-  postId: integer('post_id')
+  id: uuid('id').primaryKey().defaultRandom(),
+  comment: varchar('content').notNull(),
+  postId: uuid('post_id')
     .notNull()
-    .references(() => posts.id),
-  authorId: integer('author_id')
+    .references(() => posts.id, { onDelete: 'cascade' }),
+  authorId: uuid('author_id')
     .notNull()
-    .references(() => users.id),
+    .references(() => users.id, { onDelete: 'cascade' }),
 });
