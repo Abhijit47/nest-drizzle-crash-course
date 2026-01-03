@@ -1,15 +1,8 @@
-import {
-  index,
-  integer,
-  pgTable,
-  primaryKey,
-  serial,
-  text,
-} from 'drizzle-orm/pg-core';
+import { index, pgTable, primaryKey, text, uuid } from 'drizzle-orm/pg-core';
 import { users } from './users.schema';
 
 export const groups = pgTable('groups', {
-  id: serial('id').primaryKey(),
+  id: uuid('id').primaryKey().defaultRandom(),
   name: text('name').notNull(),
 });
 
@@ -17,12 +10,12 @@ export const groups = pgTable('groups', {
 export const usersToGroups = pgTable(
   'users_to_groups',
   {
-    userId: integer('user_id')
+    userId: uuid('user_id')
       .notNull()
-      .references(() => users.id),
-    groupId: integer('group_id')
+      .references(() => users.id, { onDelete: 'cascade' }),
+    groupId: uuid('group_id')
       .notNull()
-      .references(() => groups.id),
+      .references(() => groups.id, { onDelete: 'cascade' }),
   },
   // old way = Deprecated
   // (table) => ({
