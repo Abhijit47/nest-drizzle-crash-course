@@ -1,8 +1,9 @@
 import { Pool } from '@neondatabase/serverless';
 import { Module } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
-import { drizzle, NeonDatabase } from 'drizzle-orm/neon-serverless';
+import { drizzle } from 'drizzle-orm/neon-serverless';
 import * as schema from './schema';
+import { DrizzleDB } from './types/drizzle';
 // import { drizzle } from 'drizzle-orm/neon-http';
 // import { Pool } from 'pg';
 // import { drizzle, NodePgDatabase} from 'drizzle-orm/node-postgres';
@@ -21,7 +22,7 @@ export const DRIZZLE = Symbol('drizzle-connection');
         // return drizzle(pool, { schema: schemas }) as NodePgDatabase<
         //   typeof schemas
         // >;
-        return drizzle(pool, { schema }) as NeonDatabase<typeof schema>;
+        return drizzle(pool, { schema }) as DrizzleDB;
       },
     },
   ],
