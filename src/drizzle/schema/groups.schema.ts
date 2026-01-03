@@ -48,3 +48,9 @@ export const userToGroupRelations = relations(usersToGroups, ({ one }) => ({
     references: [groups.id],
   }),
 }));
+
+export type InsertGroup = typeof groups.$inferInsert;
+export type SelectGroup = typeof groups.$inferSelect;
+
+export type InsertUserToGroup = typeof usersToGroups.$inferInsert;
+export type SelectUserToGroup = typeof usersToGroups.$inferSelect;

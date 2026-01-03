@@ -1,21 +1,29 @@
-import { Inject, Injectable } from '@nestjs/common';
+import { BadRequestException, Inject, Injectable } from '@nestjs/common';
 import { eq } from 'drizzle-orm';
 import { DRIZZLE } from 'src/drizzle/drizzle.module';
-import { posts } from 'src/drizzle/schema';
+import { InsertPost, posts } from 'src/drizzle/schema';
 import type { DrizzleDB } from 'src/drizzle/types/drizzle';
-import { CreatePostDto } from './dto/create-post.dto';
-import { UpdatePostDto } from './dto/update-post.dto';
+// import { CreatePostDto } from './dto/create-post.dto';
+// import { UpdatePostDto } from './dto/update-post.dto';
 
 @Injectable()
 export class PostsService {
   constructor(@Inject(DRIZZLE) private db: DrizzleDB) {}
-  create(createPostDto: CreatePostDto) {
-    console.log(createPostDto);
-    return `This action adds a new post`;
+  async create(createPostDto: Omit<InsertPost, 'id'>) {
+    const [newPost] = await this.db
+      .insert(posts)
+      .values(createPostDto)
+      .returning();
+    return newPost;
   }
 
   async findAll() {
-    const posts = await this.db.query.posts.findMany({
+    const docs = await this.db.query.posts.findMany({
+      // where(fields, operators) {
+      //   return operators.eq(fields.id as PgColumn<'UUID'>, '1f36829a-5b95-468f-a77b-6fa9afbc4847');
+      // },
+      where: eq(posts.id, '1f36829a-5b95-468f-a77b-6fa9afbc4847'),
+      // eq(posts.id, '1f36829a-5b95-468f-a77b-6fa9afbc4847'),
       with: {
         author: {
           columns: {
@@ -48,16 +56,26 @@ export class PostsService {
         comments: true,
       },
     });
-    return posts;
+    return docs;
   }
 
-  findOne(id: string) {
-    return `This action returns a #${id} post`;
+  async findOne(id: string) {
+    const post = await this.db.query.posts.findFirst({
+      where: eq(posts.id, id),
+    });
+
+    if (!post) throw new BadRequestException('Post not found');
+
+    return post;
   }
 
-  update(id: string, updatePostDto: UpdatePostDto) {
-    console.log(updatePostDto);
-    return `This action updates a #${id} post`;
+  async update(id: string, updatePostDto: InsertPost) {
+    const updatePost = await this.db
+      .update(posts)
+      .set(updatePostDto)
+      .where(eq(posts.id, id))
+      .returning();
+    return updatePost;
   }
 
   async remove(id: string) {

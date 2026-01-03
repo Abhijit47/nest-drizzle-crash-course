@@ -7,8 +7,9 @@ import {
   Patch,
   Post,
 } from '@nestjs/common';
-import { CreatePostDto } from './dto/create-post.dto';
-import { UpdatePostDto } from './dto/update-post.dto';
+// import { CreatePostDto } from './dto/create-post.dto';
+// import { UpdatePostDto } from './dto/update-post.dto';
+import type { InsertPost } from 'src/drizzle/schema';
 import { PostsService } from './posts.service';
 
 @Controller('posts')
@@ -16,7 +17,7 @@ export class PostsController {
   constructor(private readonly postsService: PostsService) {}
 
   @Post()
-  create(@Body() createPostDto: CreatePostDto) {
+  create(@Body() createPostDto: Omit<InsertPost, 'id'>) {
     return this.postsService.create(createPostDto);
   }
 
@@ -31,7 +32,7 @@ export class PostsController {
   }
 
   @Patch(':id')
-  update(@Param('id') id: string, @Body() updatePostDto: UpdatePostDto) {
+  update(@Param('id') id: string, @Body() updatePostDto: InsertPost) {
     return this.postsService.update(id, updatePostDto);
   }
 
