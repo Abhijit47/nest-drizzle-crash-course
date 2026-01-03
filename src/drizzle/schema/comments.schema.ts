@@ -1,3 +1,4 @@
+import { relations } from 'drizzle-orm';
 import { pgTable, uuid, varchar } from 'drizzle-orm/pg-core';
 import { posts } from './posts.schema';
 import { users } from './users.schema';
@@ -12,3 +13,14 @@ export const comments = pgTable('comments', {
     .notNull()
     .references(() => users.id, { onDelete: 'cascade' }),
 });
+
+export const commentRelations = relations(comments, ({ one }) => ({
+  post: one(posts, {
+    fields: [comments.postId],
+    references: [posts.id],
+  }),
+  author: one(users, {
+    fields: [comments.authorId],
+    references: [users.id],
+  }),
+}));

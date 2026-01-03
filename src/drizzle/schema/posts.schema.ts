@@ -1,4 +1,6 @@
+import { relations } from 'drizzle-orm';
 import { pgTable, text, uuid } from 'drizzle-orm/pg-core';
+import { comments } from './comments.schema';
 import { users } from './users.schema';
 
 export const posts = pgTable('posts', {
@@ -9,3 +11,11 @@ export const posts = pgTable('posts', {
     .notNull()
     .references(() => users.id, { onDelete: 'cascade' }),
 });
+
+export const postRelations = relations(posts, ({ one, many }) => ({
+  author: one(users, {
+    fields: [posts.authorId],
+    references: [users.id],
+  }),
+  comments: many(comments),
+}));

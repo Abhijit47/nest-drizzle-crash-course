@@ -15,7 +15,39 @@ export class PostsService {
   }
 
   async findAll() {
-    const posts = await this.db.query.posts.findMany();
+    const posts = await this.db.query.posts.findMany({
+      with: {
+        author: {
+          columns: {
+            id: true,
+            name: true,
+            email: true,
+          },
+          with: {
+            usersToGroups: {
+              columns: {
+                userId: false,
+                groupId: false,
+              },
+              with: {
+                group: {
+                  columns: {
+                    name: true,
+                  },
+                },
+                user: {
+                  columns: {
+                    id: true,
+                    name: true,
+                  },
+                },
+              },
+            },
+          },
+        },
+        comments: true,
+      },
+    });
     return posts;
   }
 
