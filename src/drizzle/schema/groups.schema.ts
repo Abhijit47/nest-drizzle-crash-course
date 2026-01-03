@@ -1,3 +1,4 @@
+import { relations } from 'drizzle-orm';
 import { index, pgTable, primaryKey, text, uuid } from 'drizzle-orm/pg-core';
 import { users } from './users.schema';
 
@@ -32,3 +33,18 @@ export const usersToGroups = pgTable(
     index('idx_user_id').on(table.userId),
   ],
 );
+
+export const groupRelations = relations(groups, ({ many }) => ({
+  usersToGroups: many(usersToGroups),
+}));
+
+export const userToGroupRelations = relations(usersToGroups, ({ one }) => ({
+  user: one(users, {
+    fields: [usersToGroups.userId],
+    references: [users.id],
+  }),
+  group: one(groups, {
+    fields: [usersToGroups.groupId],
+    references: [groups.id],
+  }),
+}));
